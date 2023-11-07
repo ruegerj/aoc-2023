@@ -47,15 +47,16 @@ func main() {
 }
 
 func runDay(nr int, day util.Day) {
+	input := util.LoadDailyInput(nr)
 	normalizedNr := util.PadNumber(nr)
 
 	fmt.Printf("\n⭐️ Day %s\n", normalizedNr)
 
 	start1 := time.Now()
-	solution1 := day.Part1()
+	solution1 := day.Part1(input)
 	solution1.Print(time.Since(start1))
 
 	start2 := time.Now()
-	solution2 := day.Part2()
+	solution2 := day.Part2(input)
 	solution2.Print(time.Since(start2))
 }

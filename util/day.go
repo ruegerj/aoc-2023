@@ -1,6 +1,6 @@
 package util
 
 type Day interface {
-	Part1() *Solution
-	Part2() *Solution
+	Part1(input string) *Solution
+	Part2(input string) *Solution
 }
