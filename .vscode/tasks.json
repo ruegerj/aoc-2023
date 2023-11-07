@@ -1,0 +1,23 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "AOC: Create Day",
+      "type": "shell",
+      "command": "cp -r template day${input:day} && mv day${input:day}/day_template.go day${input:day}/day${input:day}.go && mv day${input:day}/day_template_test.go day${input:day}/day${input:day}_test.go && sed -i .bak -e \"s/\\$DAY_NR/${input:day}/\" day${input:day}/day${input:day}.go && sed -i .bak -e \"s/\\$DAY_NR/${input:day}/\" day${input:day}/day${input:day}_test.go && rm day${input:day}/*.bak",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "never",
+        "showReuseMessage": false,
+        "close": true
+      }
+    }
+  ],
+  "inputs": [
+    {
+      "id": "day",
+      "description": "Day Nr.",
+      "type": "promptString"
+    }
+  ]
+}
