@@ -22,108 +22,79 @@ var TEXT_TO_DIGIT = map[string]string{
 type Day01 struct{}
 
 func (d Day01) Part1(input string) *util.Solution {
-	values := util.Lines(input)
-
 	total := 0
 
-	for _, value := range values {
-		d1 := ""
-		d2 := ""
+	for _, value := range util.Lines(input) {
+		digits := make([]string, 0)
 
-		for _, c := range strings.Split(value, "") {
-			_, err := strconv.Atoi(c)
-
-			if err == nil && d1 == "" {
-				d1 = c
-				d2 = c
-				continue
-			}
+		for _, char := range strings.Split(value, "") {
+			_, err := strconv.Atoi(char)
 
 			if err == nil {
-				d2 = c
+				digits = append(digits, char)
 			}
+
 		}
 
-		num := d1 + d2
-
-		total += util.MustParseInt(num)
+		score := digits[0] + util.LastElement(digits)
+		total += util.MustParseInt(score)
 	}
 
 	return util.NewSolution(1, total)
 }
 
 func (d Day01) Part2(input string) *util.Solution {
-	values := util.Lines(input)
-
 	total := 0
 
-	for _, value := range values {
-		d1 := ""
-		d2 := ""
-
+	for _, value := range util.Lines(input) {
+		digits := make([]string, 0)
 		chars := strings.Split(value, "")
 
-		for i, c := range chars {
-			if i+2 < len(value) {
-				potential3Num, has3 := TEXT_TO_DIGIT[c+chars[i+1]+chars[i+2]]
+		for i, char := range chars {
+			digit, found := tryLookaheadDigitParse(i, chars)
 
-				if has3 {
-					if d1 == "" {
-						d1 = potential3Num
-						continue
-					}
-
-					d2 = potential3Num
-					continue
-				}
-			}
-
-			if i+3 < len(value) {
-				potential4Num, has4 := TEXT_TO_DIGIT[c+chars[i+1]+chars[i+2]+chars[i+3]]
-				if has4 {
-					if d1 == "" {
-						d1 = potential4Num
-						continue
-					}
-
-					d2 = potential4Num
-					continue
-				}
-			}
-
-			if i+4 < len(value) {
-				potential5Num, has5 := TEXT_TO_DIGIT[c+chars[i+1]+chars[i+2]+chars[i+3]+chars[i+4]]
-
-				if has5 {
-					if d1 == "" {
-						d1 = potential5Num
-						continue
-					}
-
-					d2 = potential5Num
-					continue
-				}
-			}
-
-			_, err := strconv.Atoi(c)
-
-			if err == nil && d1 == "" {
-				d1 = c
+			if found {
+				digits = append(digits, digit)
 				continue
-			} else if err == nil {
-				d2 = c
-				continue
+			}
+
+			_, err := strconv.Atoi(char)
+
+			if err == nil {
+				digits = append(digits, char)
 			}
 		}
 
-		if d2 == "" {
-			d2 = d1
-		}
-
-		num := d1 + d2
-
-		total += util.MustParseInt(num)
+		score := digits[0] + util.LastElement(digits)
+		total += util.MustParseInt(score)
 	}
 
 	return util.NewSolution(2, total)
+}
+
+func tryLookaheadDigitParse(pos int, chars []string) (string, bool) {
+	textLength := len(chars)
+	wordCandidates := []string{}
+
+	if pos+4 < textLength {
+		wordCandidates = append(wordCandidates, strings.Join(chars[pos:pos+5], ""))
+	}
+
+	if pos+3 < textLength {
+		wordCandidates = append(wordCandidates, strings.Join(chars[pos:pos+4], ""))
+	}
+
+	if pos+2 < textLength {
+		wordCandidates = append(wordCandidates, strings.Join(chars[pos:pos+3], ""))
+	}
+
+	for _, candidate := range wordCandidates {
+		digit, exits := TEXT_TO_DIGIT[candidate]
+
+		if exits {
+			return digit, true
+		}
+	}
+
+	return "", false
 }

@@ -24,3 +24,13 @@ func Chunks[T any](slice []T, size int) [][]T {
 
 	return chunks
 }
+
+func LastElement[T comparable](slice []T) T {
+	var lastElement T
+
+	if slice == nil || len(slice) == 0 {
+		return lastElement // return nil
+	}
+
+	return slice[len(slice)-1]
+}
