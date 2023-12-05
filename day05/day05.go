@@ -2,6 +2,7 @@ package day05
 
 import (
 	"slices"
+	"sort"
 	"strings"
 
 	"github.com/ruegerj/aoc-2023/util"
@@ -10,18 +11,24 @@ import (
 type Day05 struct{}
 
 func (d Day05) Part1(input string) *util.Solution {
-	seeds, plan := parseSeedPlan(input)
+	seeds, rangeMaps := parseSeedPlan(input)
 
-	seedLocations := make([]int, len(seeds))
+	seedLocations := make([]int64, len(seeds))
 
 	for i, seed := range seeds {
-		soil := resolve(seed, plan.seedToSoil)
-		fertilizer := resolve(soil, plan.soilToFertilizer)
-		water := resolve(fertilizer, plan.fertilizerToWater)
-		light := resolve(water, plan.waterToLight)
-		temperature := resolve(light, plan.lightToTemperature)
-		humidity := resolve(temperature, plan.temperatureToHumidity)
-		location := resolve(humidity, plan.humidityToLocation)
+		location := seed
+
+		for _, rangeMap := range rangeMaps {
+			for _, mapping := range rangeMap {
+				// check if range is suitable for mapping
+				if location >= mapping.from && location <= mapping.to {
+					location += mapping.delta
+					break
+				}
+			}
+
+			// value remains the same -> no suitable range found
+		}
 
 		seedLocations[i] = location
 	}
@@ -32,85 +39,125 @@ func (d Day05) Part1(input string) *util.Solution {
 }
 
 func (d Day05) Part2(input string) *util.Solution {
-	return util.NewSolution(2, -1)
-}
+	seedPairs, rangeMaps := parseSeedPlan(input)
 
-func resolve(start int, ranges []Range) int {
-	for _, r := range ranges {
-		if start < r.source || start > r.source+r.delta {
-			continue
+	// generate seed ranges from seed pairs
+	locationRanges := make([]Range, len(seedPairs)/2)
+
+	for i := 0; i < len(seedPairs); i += 2 {
+		startSeed := seedPairs[i]
+		seedCount := seedPairs[i+1]
+
+		locationRanges[i/2] = Range{
+			from: startSeed,
+			to:   startSeed + seedCount - 1,
 		}
-
-		offset := start - r.source
-		return r.destination + offset
 	}
 
-	return start
+	for _, rangeMap := range rangeMaps {
+		sort.SliceStable(rangeMap, func(i, j int) bool {
+			return rangeMap[i].from < rangeMap[j].from
+		})
+
+		mappedRanges := make([]Range, 0)
+
+		for _, locationRange := range locationRanges {
+			tmpRange := locationRange
+
+			// iterate over all asc sorted mappings of the current stage (range map)
+			for _, mapping := range rangeMap {
+				// range starts left of the mapping bounds -> fit the gap around the mapping [r1, mapping, (r2)]
+				if tmpRange.from < mapping.from {
+					newRange := Range{
+						from: tmpRange.from,
+						to:   util.MinInt64(tmpRange.to, mapping.from-1),
+					}
+					mappedRanges = append(mappedRanges, newRange)
+					tmpRange.from = mapping.from
+
+					// if range is fully covered -> continue with next mapping
+					if tmpRange.from >= tmpRange.to {
+						break
+					}
+				}
+
+				// range is inside of the mapping bounds -> transform it according to the mapping's delta
+				if tmpRange.from <= mapping.to {
+					newRange := Range{
+						from: tmpRange.from + mapping.delta,
+						to:   util.MinInt64(tmpRange.to, mapping.to) + mapping.delta,
+					}
+					mappedRanges = append(mappedRanges, newRange)
+					tmpRange.from = mapping.to + 1
+
+					// if range is fully covered -> continue with next mapping
+					if tmpRange.from >= tmpRange.to {
+						break
+					}
+				}
+			}
+
+			// no mapping covered the range -> re-use range 1:1
+			if tmpRange.from < tmpRange.to {
+				mappedRanges = append(mappedRanges, tmpRange)
+			}
+		}
+
+		// update ranges with current stage
+		locationRanges = mappedRanges
+	}
+
+	// the current locationRanges hold all ranges in which a location from a seed in the initial seed ranges could lay
+	// -> take range with lowest from = nearest possible location
+	sort.Slice(locationRanges, func(i, j int) bool {
+		return locationRanges[i].from < locationRanges[j].from
+	})
+
+	return util.NewSolution(2, locationRanges[0].from)
 }
 
-func parseSeedPlan(input string) ([]int, *SeedPlan) {
+func parseSeedPlan(input string) ([]int64, [][]RangeMap) {
 	parts := strings.Split(input, "\n\n")
-	plan := &SeedPlan{}
 
 	// parse seeds
-	seeds := make([]int, 0)
+	seeds := make([]int64, 0)
 	for _, seed := range strings.Split(strings.Split(parts[0], ": ")[1], " ") {
-		seeds = append(seeds, util.MustParseInt(seed))
+		seeds = append(seeds, util.MustParseInt64(seed))
 	}
 
-	// parse all mapping tables
-	seedToSoil := util.Lines(parts[1])[1:]
-	plan.seedToSoil = parseRanges(seedToSoil)
+	// parse maps
+	rangeMaps := make([][]RangeMap, len(parts)-1)
+	for i, part := range parts[1:] {
+		rawRanges := util.Lines(part)[1:]
+		ranges := make([]RangeMap, len(rawRanges))
 
-	soilToFertilizer := util.Lines(parts[2])[1:]
-	plan.soilToFertilizer = parseRanges(soilToFertilizer)
+		for j, rawRange := range rawRanges {
+			parts := strings.Split(rawRange, " ")
 
-	fertilizerToWater := util.Lines(parts[3])[1:]
-	plan.fertilizerToWater = parseRanges(fertilizerToWater)
+			dest := util.MustParseInt64(parts[0])
+			source := util.MustParseInt64(parts[1])
+			length := util.MustParseInt64(parts[2])
 
-	waterToLight := util.Lines(parts[4])[1:]
-	plan.waterToLight = parseRanges(waterToLight)
-
-	lightToTemperature := util.Lines(parts[5])[1:]
-	plan.lightToTemperature = parseRanges(lightToTemperature)
-
-	temperatureToHumidity := util.Lines(parts[6])[1:]
-	plan.temperatureToHumidity = parseRanges(temperatureToHumidity)
-
-	humidityToLocation := util.Lines(parts[7])[1:]
-	plan.humidityToLocation = parseRanges(humidityToLocation)
-
-	return seeds, plan
-}
-
-func parseRanges(rawRanges []string) []Range {
-	ranges := make([]Range, len(rawRanges))
-
-	for i, rawRange := range rawRanges {
-		parts := strings.Split(rawRange, " ")
-
-		ranges[i] = Range{
-			source:      util.MustParseInt(parts[1]),
-			destination: util.MustParseInt(parts[0]),
-			delta:       util.MustParseInt(parts[2]),
+			ranges[j] = RangeMap{
+				from:  source,
+				to:    source + length - 1,
+				delta: dest - source}
 		}
+
+		rangeMaps[i] = ranges
 	}
 
-	return ranges
+	return seeds, rangeMaps
 }
 
-type SeedPlan struct {
-	seedToSoil            []Range
-	soilToFertilizer      []Range
-	fertilizerToWater     []Range
-	waterToLight          []Range
-	lightToTemperature    []Range
-	temperatureToHumidity []Range
-	humidityToLocation    []Range
+type RangeMap struct {
+	from int64
+	to   int64
+	// value which should be used to transform a value inside the range bounds
+	delta int64
 }
 
 type Range struct {
-	source      int
-	destination int
-	delta       int
+	from int64
+	to   int64
 }
