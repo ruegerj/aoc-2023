@@ -46,21 +46,22 @@ func (d Day06) Part2(input string) *util.Solution {
 }
 
 func calcTotalWinningVariations(races []Race) int {
-	winningVariations := make([]int, 0)
+	winningVariations := make([]int, len(races))
 
-	for _, race := range races {
-		variations := 0
+	for i, race := range races {
+		var lower, upper int
 
-		// time is exclusive top & bottom
-		for i := 1; i < race.time; i++ {
-			effectiveDistance := i * (race.time - i)
+		for j := 1; j < race.time; j++ {
+			effectiveDistance := j * (race.time - j)
 
 			if effectiveDistance > race.distance {
-				variations++
+				lower = j
+				upper = race.time - j
+				break
 			}
 		}
 
-		winningVariations = append(winningVariations, variations)
+		winningVariations[i] = upper - lower + 1
 	}
 
 	totalWinningVariations := 1
