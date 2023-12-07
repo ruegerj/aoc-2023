@@ -1,6 +1,7 @@
 package day06
 
 import (
+	"math"
 	"regexp"
 	"strings"
 
@@ -25,7 +26,8 @@ func (d Day06) Part1(input string) *util.Solution {
 		}
 	}
 
-	totalWinningVariations := calcTotalWinningVariations(races)
+	totalWinningVariations := calcTotalWinningVariationsOptimized(races)
+	// totalWinningVariations := calcTotalWinningVariationsSemiBruteForce([]Race{race})
 
 	return util.NewSolution(1, totalWinningVariations)
 }
@@ -40,12 +42,37 @@ func (d Day06) Part2(input string) *util.Solution {
 		distance: util.MustParseInt(strings.Join(distances, "")),
 	}
 
-	totalWinningVariations := calcTotalWinningVariations([]Race{race})
+	totalWinningVariations := calcTotalWinningVariationsOptimized([]Race{race})
+	// totalWinningVariations := calcTotalWinningVariationsSemiBruteForce([]Race{race})
 
 	return util.NewSolution(2, totalWinningVariations)
 }
 
-func calcTotalWinningVariations(races []Race) int {
+func calcTotalWinningVariationsOptimized(races []Race) int {
+	winningVariations := make([]int, len(races))
+
+	// calculate the possible variations by solving the underlying quadratic equation
+	for i, race := range races {
+		a := float64(1)
+		b := float64(race.time)
+		c := float64(race.distance + 1)
+
+		x1 := (-b + math.Sqrt(math.Pow(b, 2)-4*a*c)) / (2 * a)
+		x2 := (-b - math.Sqrt(math.Pow(b, 2)-4*a*c)) / (2 * a)
+
+		winningVariations[i] = int(math.Floor(x1) - math.Ceil(x2) + 1)
+	}
+
+	totalWinningVariations := 1
+
+	for _, variationCount := range winningVariations {
+		totalWinningVariations *= variationCount
+	}
+
+	return totalWinningVariations
+}
+
+func calcTotalWinningVariationsSemiBruteForce(races []Race) int {
 	winningVariations := make([]int, len(races))
 
 	for i, race := range races {
