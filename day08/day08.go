@@ -9,17 +9,95 @@ import (
 
 type Day08 struct{}
 
-const START = "AAA"
-const END = "ZZZ"
 const LEFT = "L"
 const RIGHT = "R"
 
+var NODE_MATCHER = regexp.MustCompile(`(?P<name>[A-Z0-9]{3}) = \((?P<left>[A-Z0-9]{3}), (?P<right>[A-Z0-9]{3})\)`)
+
 func (d Day08) Part1(input string) *util.Solution {
+	const START = "AAA"
+	const END = "ZZZ"
+
+	instructions, nodes := parseNetwork(input)
+
+	steps := 0
+	current, _ := nodes[START]
+
+	for true {
+		for _, direction := range instructions {
+			if current.name == END {
+				break
+			}
+
+			if direction == LEFT {
+				current = current.left
+			}
+
+			if direction == RIGHT {
+				current = current.right
+			}
+
+			steps++
+		}
+
+		if current.name == END {
+			break
+		}
+	}
+
+	return util.NewSolution(1, steps)
+}
+
+func (d Day08) Part2(input string) *util.Solution {
+	instructions, nodes := parseNetwork(input)
+
+	currentNodes := make([]*Node, 0)
+
+	for _, node := range nodes {
+		if node.name[2] == byte('A') {
+			currentNodes = append(currentNodes, node)
+		}
+	}
+
+	stepsToEnd := make([]int, len(currentNodes))
+
+	for i, current := range currentNodes {
+		steps := 0
+
+		for true {
+			for _, direction := range instructions {
+				if current.name[2] == byte('Z') {
+					break
+				}
+
+				if direction == LEFT {
+					current = current.left
+				}
+
+				if direction == RIGHT {
+					current = current.right
+				}
+
+				steps++
+			}
+
+			if current.name[2] == byte('Z') {
+				break
+			}
+		}
+
+		stepsToEnd[i] = steps
+	}
+
+	minStepsToReachAllEnds := util.LCM(stepsToEnd[0], stepsToEnd[1], stepsToEnd[2:]...)
+
+	return util.NewSolution(2, minStepsToReachAllEnds)
+}
+
+func parseNetwork(input string) ([]string, map[string]*Node) {
 	parts := strings.Split(input, "\n\n")
 	instructions := strings.Split(parts[0], "")
 	nodeDefinitions := util.Lines(parts[1])
-
-	NODE_MATCHER := regexp.MustCompile(`(?P<name>\w{3}) = \((?P<left>\w{3}), (?P<right>\w{3})\)`)
 
 	nodes := map[string]*Node{}
 
@@ -55,36 +133,7 @@ func (d Day08) Part1(input string) *util.Solution {
 		nodes[name] = node
 	}
 
-	steps := 0
-	current, _ := nodes[START]
-
-	for true {
-		for _, direction := range instructions {
-			if current.name == END {
-				break
-			}
-
-			if direction == LEFT {
-				current = current.left
-			}
-
-			if direction == RIGHT {
-				current = current.right
-			}
-
-			steps++
-		}
-
-		if current.name == END {
-			break
-		}
-	}
-
-	return util.NewSolution(1, steps)
-}
-
-func (d Day08) Part2(input string) *util.Solution {
-	return util.NewSolution(2, -1)
+	return instructions, nodes
 }
 
 type Node struct {

@@ -47,3 +47,21 @@ func MinInt64(a, b int64) int64 {
 
 	return b
 }
+
+func GCD(a, b int) int {
+	if b == 0 {
+		return a
+	}
+
+	return GCD(b, a%b)
+}
+
+func LCM(a, b int, ints ...int) int {
+	result := a * b / GCD(a, b)
+
+	for _, num := range ints {
+		result = LCM(result, num)
+	}
+
+	return result
+}

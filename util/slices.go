@@ -34,3 +34,11 @@ func LastElement[T comparable](slice []T) T {
 
 	return slice[len(slice)-1]
 }
+
+func RemoveIndex[T comparable](index int, slice []T) []T {
+	if index == len(slice)-1 {
+		return slice[:index]
+	}
+
+	return append(slice[:index], slice[index+1:]...)
+}
