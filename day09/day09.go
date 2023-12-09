@@ -30,11 +30,29 @@ func (d Day09) Part1(input string) *util.Solution {
 }
 
 func (d Day09) Part2(input string) *util.Solution {
-	return util.NewSolution(2, -1)
+	sequences := util.Lines(input)
+
+	previousValues := make([]int, len(sequences))
+
+	for i, sequence := range sequences {
+		rawValues := strings.Split(sequence, " ")
+		values := make([]int, len(rawValues))
+
+		for j, rawValue := range rawValues {
+			values[j] = util.MustParseInt(rawValue)
+		}
+
+		previousValues[i] = findPreviousValue(values)
+	}
+
+	previousValuesSum := util.SumInts(previousValues)
+
+	return util.NewSolution(2, previousValuesSum)
 }
 
 func findNextValue(values []int) int {
-	if util.Every(values, func(val int) bool { return val == 0 }) {
+	equalsToZero := func(val int) bool { return val == 0 }
+	if util.Every(values, equalsToZero) {
 		return 0
 	}
 
@@ -45,4 +63,19 @@ func findNextValue(values []int) int {
 	}
 
 	return util.LastElement(values) + findNextValue(gaps)
+}
+
+func findPreviousValue(values []int) int {
+	equalsToZero := func(val int) bool { return val == 0 }
+	if util.Every(values, equalsToZero) {
+		return 0
+	}
+
+	gaps := make([]int, 0)
+
+	for i := 0; i < len(values)-1; i++ {
+		gaps = append(gaps, values[i+1]-values[i])
+	}
+
+	return values[0] - findPreviousValue(gaps)
 }

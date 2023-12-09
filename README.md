@@ -9,6 +9,8 @@ Solutions for this years [Advent of Code](https://adventofcode.com/2023), implem
 - [Day 05: If You Give A Seed A Fertilizer](https://adventofcode.com/2023/day/5) ([code](https://github.com/ruegerj/aoc-2023/blob/main/day05/day05.go))
 - [Day 06: Wait For It](https://adventofcode.com/2023/day/6) ([code](https://github.com/ruegerj/aoc-2023/blob/main/day06/day06.go))
 - [Day 07: Camel Cards](https://adventofcode.com/2023/day/7) ([code](https://github.com/ruegerj/aoc-2023/blob/main/day07/day07.go))
+- [Day 08: Haunted Wasteland](https://adventofcode.com/2023/day/8) ([code](https://github.com/ruegerj/aoc-2023/blob/main/day08/day08.go))
+- [Day 09: Mirage Maintenance](https://adventofcode.com/2023/day/9) ([code](https://github.com/ruegerj/aoc-2023/blob/main/day09/day09.go))
 
 ## Usage
 

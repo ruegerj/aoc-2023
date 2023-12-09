@@ -33,7 +33,7 @@ func TestPart1(t *testing.T) {
 }
 
 func TestPart2(t *testing.T) {
-	expected := -1 // TODO: adapt
+	expected := 977
 	solution := Day09{}.Part2(dailyInput)
 
 	if solution.Result.(int) != expected {
