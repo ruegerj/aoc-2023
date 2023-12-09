@@ -42,3 +42,13 @@ func RemoveIndex[T comparable](index int, slice []T) []T {
 
 	return append(slice[:index], slice[index+1:]...)
 }
+
+func Every[T comparable](slice []T, predicate func(T) bool) bool {
+	for _, value := range slice {
+		if !predicate(value) {
+			return false
+		}
+	}
+
+	return true
+}

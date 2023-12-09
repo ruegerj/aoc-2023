@@ -15,6 +15,7 @@ import (
 	"github.com/ruegerj/aoc-2023/day06"
 	"github.com/ruegerj/aoc-2023/day07"
 	"github.com/ruegerj/aoc-2023/day08"
+	"github.com/ruegerj/aoc-2023/day09"
 	"github.com/ruegerj/aoc-2023/util"
 )
 
@@ -52,6 +53,7 @@ func main() {
 		6: day06.Day06{},
 		7: day07.Day07{},
 		8: day08.Day08{},
+		9: day09.Day09{},
 	}
 	requestedDay := dayRegistry[dayNr]
 
