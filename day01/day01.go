@@ -4,7 +4,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/ruegerj/aoc-2023/util"
+	"github.com/ruegerj/aoc-2023/pkg/common"
+	"github.com/ruegerj/aoc-2023/pkg/util"
 )
 
 var TEXT_TO_DIGIT = map[string]string{
@@ -21,7 +22,7 @@ var TEXT_TO_DIGIT = map[string]string{
 
 type Day01 struct{}
 
-func (d Day01) Part1(input string) *util.Solution {
+func (d Day01) Part1(input string) *common.Solution {
 	total := 0
 
 	for _, value := range util.Lines(input) {
@@ -40,10 +41,10 @@ func (d Day01) Part1(input string) *util.Solution {
 		total += util.MustParseInt(score)
 	}
 
-	return util.NewSolution(1, total)
+	return common.NewSolution(1, total)
 }
 
-func (d Day01) Part2(input string) *util.Solution {
+func (d Day01) Part2(input string) *common.Solution {
 	total := 0
 
 	for _, value := range util.Lines(input) {
@@ -69,7 +70,7 @@ func (d Day01) Part2(input string) *util.Solution {
 		total += util.MustParseInt(score)
 	}
 
-	return util.NewSolution(2, total)
+	return common.NewSolution(2, total)
 }
 
 func tryLookaheadDigitParse(pos int, chars []string) (string, bool) {

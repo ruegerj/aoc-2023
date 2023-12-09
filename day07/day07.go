@@ -5,7 +5,8 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/ruegerj/aoc-2023/util"
+	"github.com/ruegerj/aoc-2023/pkg/common"
+	"github.com/ruegerj/aoc-2023/pkg/util"
 	"golang.org/x/exp/maps"
 )
 
@@ -21,7 +22,7 @@ const HIGH_CARD = 1
 
 const JOKER = "J"
 
-func (d Day07) Part1(input string) *util.Solution {
+func (d Day07) Part1(input string) *common.Solution {
 	var CARD_VALUES = []string{"2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K", "A"}
 
 	rawHands := util.Lines(input)
@@ -44,10 +45,10 @@ func (d Day07) Part1(input string) *util.Solution {
 	sortHandsByRankAsc(hands, CARD_VALUES)
 	totalWinnings := calcTotalWinnings(hands)
 
-	return util.NewSolution(1, totalWinnings)
+	return common.NewSolution(1, totalWinnings)
 }
 
-func (d Day07) Part2(input string) *util.Solution {
+func (d Day07) Part2(input string) *common.Solution {
 	var CARD_VALUES = []string{"J", "2", "3", "4", "5", "6", "7", "8", "9", "T", "Q", "K", "A"}
 
 	rawHands := util.Lines(input)
@@ -88,7 +89,7 @@ func (d Day07) Part2(input string) *util.Solution {
 	sortHandsByRankAsc(hands, CARD_VALUES)
 	totalWinnings := calcTotalWinnings(hands)
 
-	return util.NewSolution(2, totalWinnings)
+	return common.NewSolution(2, totalWinnings)
 }
 
 func analyzeCards(cards string, ignoreJoker bool) (map[string]int, int) {

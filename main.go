@@ -16,7 +16,8 @@ import (
 	"github.com/ruegerj/aoc-2023/day07"
 	"github.com/ruegerj/aoc-2023/day08"
 	"github.com/ruegerj/aoc-2023/day09"
-	"github.com/ruegerj/aoc-2023/util"
+	"github.com/ruegerj/aoc-2023/pkg/common"
+	"github.com/ruegerj/aoc-2023/pkg/util"
 )
 
 func main() {
@@ -44,7 +45,7 @@ func main() {
 		return
 	}
 
-	dayRegistry := map[int]util.Day{
+	dayRegistry := map[int]common.Day{
 		1: day01.Day01{},
 		2: day02.Day02{},
 		3: day03.Day03{},
@@ -65,8 +66,8 @@ func main() {
 	runDay(dayNr, requestedDay)
 }
 
-func runDay(nr int, day util.Day) {
-	input := util.LoadDailyInput(nr)
+func runDay(nr int, day common.Day) {
+	input := common.LoadDailyInput(nr)
 	normalizedNr := util.PadNumber(nr)
 
 	fmt.Printf("\n⭐️ Day %s\n", normalizedNr)

@@ -5,14 +5,15 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/ruegerj/aoc-2023/util"
+	"github.com/ruegerj/aoc-2023/pkg/common"
+	"github.com/ruegerj/aoc-2023/pkg/util"
 )
 
 type Day06 struct{}
 
 var NUMBER_MATCHER = regexp.MustCompile(`\d+`)
 
-func (d Day06) Part1(input string) *util.Solution {
+func (d Day06) Part1(input string) *common.Solution {
 	parts := util.Lines(input)
 	times := NUMBER_MATCHER.FindAllString(parts[0], -1)
 	distances := NUMBER_MATCHER.FindAllString(parts[1], -1)
@@ -29,10 +30,10 @@ func (d Day06) Part1(input string) *util.Solution {
 	totalWinningVariations := calcTotalWinningVariationsOptimized(races)
 	// totalWinningVariations := calcTotalWinningVariationsSemiBruteForce([]Race{race})
 
-	return util.NewSolution(1, totalWinningVariations)
+	return common.NewSolution(1, totalWinningVariations)
 }
 
-func (d Day06) Part2(input string) *util.Solution {
+func (d Day06) Part2(input string) *common.Solution {
 	parts := util.Lines(input)
 	times := NUMBER_MATCHER.FindAllString(parts[0], -1)
 	distances := NUMBER_MATCHER.FindAllString(parts[1], -1)
@@ -45,7 +46,7 @@ func (d Day06) Part2(input string) *util.Solution {
 	totalWinningVariations := calcTotalWinningVariationsOptimized([]Race{race})
 	// totalWinningVariations := calcTotalWinningVariationsSemiBruteForce([]Race{race})
 
-	return util.NewSolution(2, totalWinningVariations)
+	return common.NewSolution(2, totalWinningVariations)
 }
 
 func calcTotalWinningVariationsOptimized(races []Race) int {

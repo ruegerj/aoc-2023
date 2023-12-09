@@ -5,14 +5,15 @@ import (
 	"slices"
 	"strings"
 
-	"github.com/ruegerj/aoc-2023/util"
+	"github.com/ruegerj/aoc-2023/pkg/common"
+	"github.com/ruegerj/aoc-2023/pkg/util"
 )
 
 type Day04 struct{}
 
 var CARD_MATCHER = regexp.MustCompile(`Card\s+\d+: (?P<winningNumbers>[\s|\d]+) \| (?P<ownNumbers>[\s|\d]+)`)
 
-func (d Day04) Part1(input string) *util.Solution {
+func (d Day04) Part1(input string) *common.Solution {
 	totalPoints := 0
 
 	cards := util.Lines(input)
@@ -34,10 +35,10 @@ func (d Day04) Part1(input string) *util.Solution {
 		totalPoints += points
 	}
 
-	return util.NewSolution(1, totalPoints)
+	return common.NewSolution(1, totalPoints)
 }
 
-func (d Day04) Part2(input string) *util.Solution {
+func (d Day04) Part2(input string) *common.Solution {
 	totalCards := 0
 
 	cards := util.Lines(input)
@@ -54,7 +55,7 @@ func (d Day04) Part2(input string) *util.Solution {
 		totalCards += cardCount[i]
 	}
 
-	return util.NewSolution(2, totalCards)
+	return common.NewSolution(2, totalCards)
 }
 
 func resolveWonCards(cardIndex int, cards []string, cardCount map[int]int, wonCopies map[int]int) {

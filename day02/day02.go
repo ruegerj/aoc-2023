@@ -4,12 +4,13 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/ruegerj/aoc-2023/util"
+	"github.com/ruegerj/aoc-2023/pkg/common"
+	"github.com/ruegerj/aoc-2023/pkg/util"
 )
 
 type Day02 struct{}
 
-func (d Day02) Part1(input string) *util.Solution {
+func (d Day02) Part1(input string) *common.Solution {
 	cubeBalance := map[string]int{
 		"red":   12,
 		"green": 13,
@@ -26,10 +27,10 @@ func (d Day02) Part1(input string) *util.Solution {
 		}
 	}
 
-	return util.NewSolution(1, totalPossibleGames)
+	return common.NewSolution(1, totalPossibleGames)
 }
 
-func (d Day02) Part2(input string) *util.Solution {
+func (d Day02) Part2(input string) *common.Solution {
 	games := parseGames(input)
 
 	powerSum := 0
@@ -38,7 +39,7 @@ func (d Day02) Part2(input string) *util.Solution {
 		powerSum += game.calcPower()
 	}
 
-	return util.NewSolution(2, powerSum)
+	return common.NewSolution(2, powerSum)
 }
 
 func parseGames(input string) []Game {

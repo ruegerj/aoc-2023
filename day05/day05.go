@@ -5,12 +5,13 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/ruegerj/aoc-2023/util"
+	"github.com/ruegerj/aoc-2023/pkg/common"
+	"github.com/ruegerj/aoc-2023/pkg/util"
 )
 
 type Day05 struct{}
 
-func (d Day05) Part1(input string) *util.Solution {
+func (d Day05) Part1(input string) *common.Solution {
 	seeds, rangeMaps := parseSeedPlan(input)
 
 	seedLocations := make([]int64, len(seeds))
@@ -35,10 +36,10 @@ func (d Day05) Part1(input string) *util.Solution {
 
 	slices.Sort(seedLocations)
 
-	return util.NewSolution(1, seedLocations[0])
+	return common.NewSolution(1, seedLocations[0])
 }
 
-func (d Day05) Part2(input string) *util.Solution {
+func (d Day05) Part2(input string) *common.Solution {
 	seedPairs, rangeMaps := parseSeedPlan(input)
 
 	// generate seed ranges from seed pairs
@@ -113,7 +114,7 @@ func (d Day05) Part2(input string) *util.Solution {
 		return locationRanges[i].from < locationRanges[j].from
 	})
 
-	return util.NewSolution(2, locationRanges[0].from)
+	return common.NewSolution(2, locationRanges[0].from)
 }
 
 func parseSeedPlan(input string) ([]int64, [][]RangeMap) {

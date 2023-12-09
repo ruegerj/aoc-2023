@@ -1,4 +1,4 @@
-package util
+package common
 
 type Day interface {
 	Part1(input string) *Solution

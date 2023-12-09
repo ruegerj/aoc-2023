@@ -4,7 +4,8 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/ruegerj/aoc-2023/util"
+	"github.com/ruegerj/aoc-2023/pkg/common"
+	"github.com/ruegerj/aoc-2023/pkg/util"
 )
 
 type Day08 struct{}
@@ -14,7 +15,7 @@ const RIGHT = "R"
 
 var NODE_MATCHER = regexp.MustCompile(`(?P<name>[A-Z0-9]{3}) = \((?P<left>[A-Z0-9]{3}), (?P<right>[A-Z0-9]{3})\)`)
 
-func (d Day08) Part1(input string) *util.Solution {
+func (d Day08) Part1(input string) *common.Solution {
 	const START = "AAA"
 	const END = "ZZZ"
 
@@ -45,10 +46,10 @@ func (d Day08) Part1(input string) *util.Solution {
 		}
 	}
 
-	return util.NewSolution(1, steps)
+	return common.NewSolution(1, steps)
 }
 
-func (d Day08) Part2(input string) *util.Solution {
+func (d Day08) Part2(input string) *common.Solution {
 	instructions, nodes := parseNetwork(input)
 
 	currentNodes := make([]*Node, 0)
@@ -91,7 +92,7 @@ func (d Day08) Part2(input string) *util.Solution {
 
 	minStepsToReachAllEnds := util.LCM(stepsToEnd[0], stepsToEnd[1], stepsToEnd[2:]...)
 
-	return util.NewSolution(2, minStepsToReachAllEnds)
+	return common.NewSolution(2, minStepsToReachAllEnds)
 }
 
 func parseNetwork(input string) ([]string, map[string]*Node) {

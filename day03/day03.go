@@ -3,12 +3,13 @@ package day03
 import (
 	"strconv"
 
-	"github.com/ruegerj/aoc-2023/util"
+	"github.com/ruegerj/aoc-2023/pkg/common"
+	"github.com/ruegerj/aoc-2023/pkg/util"
 )
 
 type Day03 struct{}
 
-func (d Day03) Part1(input string) *util.Solution {
+func (d Day03) Part1(input string) *common.Solution {
 	matrix := util.Matrix[string](input, "", func(s string) string { return s })
 
 	partNumberSum := 0
@@ -88,10 +89,10 @@ func (d Day03) Part1(input string) *util.Solution {
 		}
 	}
 
-	return util.NewSolution(1, partNumberSum)
+	return common.NewSolution(1, partNumberSum)
 }
 
-func (d Day03) Part2(input string) *util.Solution {
+func (d Day03) Part2(input string) *common.Solution {
 	matrix := util.Matrix[string](input, "", func(s string) string { return s })
 
 	cogGearsLookup := map[Cog][]int{}
@@ -191,7 +192,7 @@ func (d Day03) Part2(input string) *util.Solution {
 		gearRatioSum += gears[0] * gears[1]
 	}
 
-	return util.NewSolution(2, gearRatioSum)
+	return common.NewSolution(2, gearRatioSum)
 }
 
 func isInt(text string) bool {
