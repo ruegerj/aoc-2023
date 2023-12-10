@@ -16,6 +16,7 @@ import (
 	"github.com/ruegerj/aoc-2023/day07"
 	"github.com/ruegerj/aoc-2023/day08"
 	"github.com/ruegerj/aoc-2023/day09"
+	"github.com/ruegerj/aoc-2023/day10"
 	"github.com/ruegerj/aoc-2023/pkg/common"
 	"github.com/ruegerj/aoc-2023/pkg/util"
 )
@@ -46,15 +47,16 @@ func main() {
 	}
 
 	dayRegistry := map[int]common.Day{
-		1: day01.Day01{},
-		2: day02.Day02{},
-		3: day03.Day03{},
-		4: day04.Day04{},
-		5: day05.Day05{},
-		6: day06.Day06{},
-		7: day07.Day07{},
-		8: day08.Day08{},
-		9: day09.Day09{},
+		1:  day01.Day01{},
+		2:  day02.Day02{},
+		3:  day03.Day03{},
+		4:  day04.Day04{},
+		5:  day05.Day05{},
+		6:  day06.Day06{},
+		7:  day07.Day07{},
+		8:  day08.Day08{},
+		9:  day09.Day09{},
+		10: day10.Day10{},
 	}
 	requestedDay := dayRegistry[dayNr]
 

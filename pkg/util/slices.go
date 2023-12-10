@@ -52,3 +52,37 @@ func Every[T comparable](slice []T, predicate func(T) bool) bool {
 
 	return true
 }
+
+func Flat[T any](slice [][]T) []T {
+	flatSlice := make([]T, 0)
+
+	for _, subSlice := range slice {
+		flatSlice = append(flatSlice, subSlice...)
+	}
+
+	return flatSlice
+}
+
+func FirstOrDefault[T any](slice []T, predicate func(T) bool) T {
+	var defaultValue T
+
+	for _, value := range slice {
+		if predicate(value) {
+			return value
+		}
+	}
+
+	return defaultValue
+}
+
+func Filter[T any](slice []T, filter func(T) bool) []T {
+	filtered := make([]T, 0)
+
+	for _, value := range slice {
+		if filter(value) {
+			filtered = append(filtered, value)
+		}
+	}
+
+	return filtered
+}
