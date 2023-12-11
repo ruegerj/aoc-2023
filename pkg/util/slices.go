@@ -87,6 +87,16 @@ func Filter[T any](slice []T, filter func(T) bool) []T {
 	return filtered
 }
 
+func Any[T any](slice []T, predicate func(T) bool) bool {
+	for _, item := range slice {
+		if predicate(item) {
+			return true
+		}
+	}
+
+	return false
+}
+
 func Transpose[T any](matrix [][]T) [][]T {
 	transposed := make([][]T, len(matrix[0]))
 	for i := 0; i < len(matrix); i++ {

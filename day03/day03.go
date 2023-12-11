@@ -10,7 +10,7 @@ import (
 type Day03 struct{}
 
 func (d Day03) Part1(input string) *common.Solution {
-	matrix := util.Matrix[string](input, "", func(s string) string { return s })
+	matrix := util.Matrix(input, "")
 
 	partNumberSum := 0
 
@@ -93,7 +93,7 @@ func (d Day03) Part1(input string) *common.Solution {
 }
 
 func (d Day03) Part2(input string) *common.Solution {
-	matrix := util.Matrix[string](input, "", func(s string) string { return s })
+	matrix := util.Matrix(input, "")
 
 	cogGearsLookup := map[Cog][]int{}
 
