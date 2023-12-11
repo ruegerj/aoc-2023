@@ -86,3 +86,13 @@ func Filter[T any](slice []T, filter func(T) bool) []T {
 
 	return filtered
 }
+
+func Transpose[T any](matrix [][]T) [][]T {
+	transposed := make([][]T, len(matrix[0]))
+	for i := 0; i < len(matrix); i++ {
+		for j := 0; j < len(matrix[0]); j++ {
+			transposed[j] = append(transposed[j], matrix[i][j])
+		}
+	}
+	return transposed
+}

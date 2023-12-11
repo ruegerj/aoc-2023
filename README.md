@@ -11,6 +11,7 @@ Solutions for this years [Advent of Code](https://adventofcode.com/2023), implem
 - [Day 07: Camel Cards](https://adventofcode.com/2023/day/7) ([code](https://github.com/ruegerj/aoc-2023/blob/main/day07/day07.go))
 - [Day 08: Haunted Wasteland](https://adventofcode.com/2023/day/8) ([code](https://github.com/ruegerj/aoc-2023/blob/main/day08/day08.go))
 - [Day 09: Mirage Maintenance](https://adventofcode.com/2023/day/9) ([code](https://github.com/ruegerj/aoc-2023/blob/main/day09/day09.go))
+- [Day 10: Pipe Maze](https://adventofcode.com/2023/day/10) ([code](https://github.com/ruegerj/aoc-2023/blob/main/day10/day10.go))
 
 ## Usage
 
