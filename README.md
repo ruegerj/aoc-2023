@@ -12,6 +12,7 @@ Solutions for this years [Advent of Code](https://adventofcode.com/2023), implem
 - [Day 08: Haunted Wasteland](https://adventofcode.com/2023/day/8) ([code](https://github.com/ruegerj/aoc-2023/blob/main/day08/day08.go))
 - [Day 09: Mirage Maintenance](https://adventofcode.com/2023/day/9) ([code](https://github.com/ruegerj/aoc-2023/blob/main/day09/day09.go))
 - [Day 10: Pipe Maze](https://adventofcode.com/2023/day/10) ([code](https://github.com/ruegerj/aoc-2023/blob/main/day10/day10.go))
+- [Day 11: Cosmic Expansion](https://adventofcode.com/2023/day/11) ([code](https://github.com/ruegerj/aoc-2023/blob/main/day11/day11.go))
 
 ## Usage
 
