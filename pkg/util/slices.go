@@ -106,3 +106,13 @@ func Transpose[T any](matrix [][]T) [][]T {
 	}
 	return transposed
 }
+
+func ToIntSlice(slice []string) []int {
+	converted := make([]int, len(slice))
+
+	for i, value := range slice {
+		converted[i] = MustParseInt(value)
+	}
+
+	return converted
+}
