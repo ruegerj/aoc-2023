@@ -116,3 +116,10 @@ func ToIntSlice(slice []string) []int {
 
 	return converted
 }
+
+func DeepCopySlice[T any](slice []T) []T {
+	deepCopy := make([]T, len(slice))
+	copy(deepCopy, slice)
+
+	return deepCopy
+}
