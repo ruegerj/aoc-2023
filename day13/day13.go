@@ -1,7 +1,6 @@
 package day13
 
 import (
-	"fmt"
 	"slices"
 	"strings"
 
@@ -15,23 +14,19 @@ func (d Day13) Part1(input string) *common.Solution {
 	patterns := strings.Split(input, "\n\n")
 	score := 0
 
-	for i, pattern := range patterns {
+	for _, pattern := range patterns {
 		matrix := util.Matrix(pattern, "")
-		horizontalMirror, hasHorizontal := findMirrorIndex(matrix)
+		horizontalMirror, hasHorizontal := findMirrorIndex(matrix, 0)
 
 		if hasHorizontal {
 			score += horizontalMirror * 100
 		}
 
 		tMatrix := util.Transpose(matrix)
-		verticalMirror, hasVertical := findMirrorIndex(tMatrix)
+		verticalMirror, hasVertical := findMirrorIndex(tMatrix, 0)
 
 		if hasVertical {
 			score += verticalMirror
-		}
-
-		if !hasHorizontal && !hasVertical {
-			fmt.Println(i)
 		}
 	}
 
@@ -39,10 +34,29 @@ func (d Day13) Part1(input string) *common.Solution {
 }
 
 func (d Day13) Part2(input string) *common.Solution {
-	return common.NewSolution(2, -1)
+	patterns := strings.Split(input, "\n\n")
+	score := 0
+
+	for _, pattern := range patterns {
+		matrix := util.Matrix(pattern, "")
+		horizontalMirror, hasHorizontal := findMirrorIndex(matrix, 1)
+
+		if hasHorizontal {
+			score += horizontalMirror * 100
+		}
+
+		tMatrix := util.Transpose(matrix)
+		verticalMirror, hasVertical := findMirrorIndex(tMatrix, 1)
+
+		if hasVertical {
+			score += verticalMirror
+		}
+	}
+
+	return common.NewSolution(2, score)
 }
 
-func findMirrorIndex(matrix [][]string) (int, bool) {
+func findMirrorIndex(matrix [][]string, maxSmudges int) (int, bool) {
 	candidates := make([]int, 0)
 
 	for i, row := range matrix {
@@ -50,7 +64,15 @@ func findMirrorIndex(matrix [][]string) (int, bool) {
 			continue
 		}
 
-		if stringSlicesEqual(row, matrix[i+1]) {
+		current := row
+		next := matrix[i+1]
+
+		currentConcat := strings.Join(current, "")
+		nextConcat := strings.Join(next, "")
+
+		smudgeCount := countSmudges(currentConcat, nextConcat)
+
+		if smudgeCount <= maxSmudges {
 			candidates = append(candidates, i)
 		}
 	}
@@ -72,24 +94,31 @@ func findMirrorIndex(matrix [][]string) (int, bool) {
 			positionsToCheck = deltaLowerBound
 		}
 
-		lowerItems := matrix[bottomMirror+1 : bottomMirror+positionsToCheck+1]
-		upperItems := util.DeepCopySlice(matrix[topMirror-positionsToCheck : topMirror])
+		lowerItems := matrix[bottomMirror : bottomMirror+positionsToCheck+1]
+		upperItems := util.DeepCopySlice(matrix[topMirror-positionsToCheck : topMirror+1])
+		positionsToCheck++
 
 		slices.Reverse(upperItems)
+
 		successfullyVisited := 0
+		smudgesCorrected := 0
 
 		for i := 0; i < positionsToCheck; i++ {
-			lower := lowerItems[i]
-			upper := upperItems[i]
+			lower := strings.Join(lowerItems[i], "")
+			upper := strings.Join(upperItems[i], "")
 
-			if !stringSlicesEqual(lower, upper) {
-				break
+			smudgeCount := countSmudges(lower, upper)
+
+			if smudgeCount == 1 && smudgesCorrected < maxSmudges {
+				smudgesCorrected++
 			}
 
-			successfullyVisited++
+			if smudgeCount <= maxSmudges {
+				successfullyVisited++
+			}
 		}
 
-		if successfullyVisited == positionsToCheck {
+		if successfullyVisited == positionsToCheck && smudgesCorrected == maxSmudges {
 			confirmedReflection = candidate + 1
 			break
 		}
@@ -98,13 +127,14 @@ func findMirrorIndex(matrix [][]string) (int, bool) {
 	return confirmedReflection, confirmedReflection > 0
 }
 
-func stringSlicesEqual(a, b []string) bool {
-	if len(a) != len(b) {
-		return false
+func countSmudges(a, b string) int {
+	smudges := 0
+
+	for i := 0; i < len(a); i++ {
+		if a[i] != b[i] {
+			smudges++
+		}
 	}
 
-	aStr := strings.Join(a, "")
-	bStr := strings.Join(b, "")
-
-	return aStr == bStr
+	return smudges
 }

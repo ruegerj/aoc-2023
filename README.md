@@ -14,6 +14,7 @@ Solutions for this years [Advent of Code](https://adventofcode.com/2023), implem
 - [Day 10: Pipe Maze](https://adventofcode.com/2023/day/10) ([code](https://github.com/ruegerj/aoc-2023/blob/main/day10/day10.go))
 - [Day 11: Cosmic Expansion](https://adventofcode.com/2023/day/11) ([code](https://github.com/ruegerj/aoc-2023/blob/main/day11/day11.go))
 - [Day 12: Hot Springs](https://adventofcode.com/2023/day/12) ([code](https://github.com/ruegerj/aoc-2023/blob/main/day12/day12.go))
+- [Day 13: Point of Incidence](https://adventofcode.com/2023/day/13) ([code](https://github.com/ruegerj/aoc-2023/blob/main/day13/day13.go))
 
 ## Usage
 
