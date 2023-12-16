@@ -15,6 +15,8 @@ Solutions for this years [Advent of Code](https://adventofcode.com/2023), implem
 - [Day 11: Cosmic Expansion](https://adventofcode.com/2023/day/11) ([code](https://github.com/ruegerj/aoc-2023/blob/main/day11/day11.go))
 - [Day 12: Hot Springs](https://adventofcode.com/2023/day/12) ([code](https://github.com/ruegerj/aoc-2023/blob/main/day12/day12.go))
 - [Day 13: Point of Incidence](https://adventofcode.com/2023/day/13) ([code](https://github.com/ruegerj/aoc-2023/blob/main/day13/day13.go))
+- [Day 14: Parabolic Reflector Dish](https://adventofcode.com/2023/day/14) ([code](https://github.com/ruegerj/aoc-2023/blob/main/day14/day14.go))
+- [Day 15: Lens Library](https://adventofcode.com/2023/day/15) ([code](https://github.com/ruegerj/aoc-2023/blob/main/day15/day15.go))
 
 ## Usage
 
