@@ -32,6 +32,14 @@ func Abs(number int) int {
 	return number
 }
 
+func Abs64(number int64) int64 {
+	if number < 0 {
+		number = number * -1
+	}
+
+	return number
+}
+
 func MinInt(a, b int) int {
 	if a < b {
 		return a
