@@ -30,7 +30,7 @@ func (d Day18) Part1(input string) *common.Solution {
 		points = append(points, point)
 	}
 
-	lagoonArea := shoelace(points, trenchLength)
+	lagoonArea := picksShoelace(points, trenchLength)
 
 	return common.NewSolution(1, lagoonArea)
 }
@@ -54,12 +54,12 @@ func (d Day18) Part2(input string) *common.Solution {
 		points = append(points, point)
 	}
 
-	lagoonArea := shoelace(points, trenchLength)
+	lagoonArea := picksShoelace(points, trenchLength)
 
 	return common.NewSolution(2, lagoonArea)
 }
 
-func shoelace(points []*Point, borderLength int64) int64 {
+func picksShoelace(points []*Point, borderLength int64) int64 {
 	var doubledArea int64 = 0
 
 	for i := 0; i < len(points)-1; i++ {
