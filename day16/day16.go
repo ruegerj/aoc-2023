@@ -1,9 +1,6 @@
 package day16
 
 import (
-	"errors"
-	"fmt"
-
 	mapset "github.com/deckarep/golang-set/v2"
 	"github.com/ruegerj/aoc-2023/pkg/common"
 	"github.com/ruegerj/aoc-2023/pkg/util"
@@ -49,7 +46,71 @@ func (d Day16) Part1(input string) *common.Solution {
 }
 
 func (d Day16) Part2(input string) *common.Solution {
-	return common.NewSolution(2, -1)
+	tiles := util.Matrix(input, "")
+
+	topLeft := tile{y: 0, x: 0}
+	topRight := tile{y: 0, x: len(tiles[0]) - 1}
+	bottomLeft := tile{y: len(tiles) - 1, x: 0}
+	bottomRight := tile{y: len(tiles) - 1, x: len(tiles[0]) - 1}
+
+	candidates := []flowStart{
+		{current: topLeft, direction: LEFT_RIGHT},
+		{current: topLeft, direction: TOP_BOTTOM},
+		{current: topRight, direction: RIGHT_LEFT},
+		{current: topRight, direction: TOP_BOTTOM},
+		{current: bottomLeft, direction: LEFT_RIGHT},
+		{current: bottomLeft, direction: BOTTOM_UP},
+		{current: bottomRight, direction: RIGHT_LEFT},
+		{current: bottomRight, direction: BOTTOM_UP},
+	}
+
+	for i := 1; i < len(tiles[0])-1; i++ {
+		candidates = append(candidates, flowStart{
+			current:   tile{y: 0, x: i},
+			direction: TOP_BOTTOM,
+		})
+		candidates = append(candidates, flowStart{
+			current:   tile{y: len(tiles) - 1, x: i},
+			direction: BOTTOM_UP,
+		})
+	}
+
+	for i := 1; i < len(tiles)-1; i++ {
+		candidates = append(candidates, flowStart{
+			current:   tile{y: i, x: 0},
+			direction: LEFT_RIGHT,
+		})
+		candidates = append(candidates, flowStart{
+			current:   tile{y: i, x: len(tiles[0]) - 1},
+			direction: RIGHT_LEFT,
+		})
+	}
+
+	mostTilesEnergized := 0
+
+	for _, candidate := range candidates {
+		visited := map[tile]int{}
+
+		flow(candidate.current, candidate.direction, tiles, visited)
+
+		energizedTiles := 0
+		visitedTiles := mapset.NewSet[tile]()
+
+		for _, key := range maps.Keys(visited) {
+			if visitedTiles.Contains(key) {
+				continue
+			}
+
+			energizedTiles++
+			visitedTiles.Add(key)
+		}
+
+		if energizedTiles > mostTilesEnergized {
+			mostTilesEnergized = energizedTiles
+		}
+	}
+
+	return common.NewSolution(2, mostTilesEnergized)
 }
 
 func flow(current tile, direction int, tiles [][]string, visited map[tile]int) {
@@ -105,10 +166,6 @@ func flow(current tile, direction int, tiles [][]string, visited map[tile]int) {
 		} else if direction == BOTTOM_UP {
 			next = nextTileRight(current)
 			newDirection = LEFT_RIGHT
-		} else {
-			// TODO: remove
-			fmt.Println(current, direction)
-			panic(errors.New("unknown direction"))
 		}
 
 		flow(next, newDirection, tiles, visited)
@@ -129,10 +186,6 @@ func flow(current tile, direction int, tiles [][]string, visited map[tile]int) {
 		} else if direction == BOTTOM_UP {
 			next = nextTileLeft(current)
 			newDirection = RIGHT_LEFT
-		} else {
-			// TODO: remove
-			fmt.Println(current, direction)
-			panic(errors.New("unknown direction"))
 		}
 
 		flow(next, newDirection, tiles, visited)
@@ -149,10 +202,6 @@ func nextTileInDirection(current tile, direction int) tile {
 		next = tile{y: current.y + 1, x: current.x}
 	} else if direction == BOTTOM_UP {
 		next = tile{y: current.y - 1, x: current.x}
-	} else {
-		// TODO: remove
-		fmt.Println(current, direction)
-		panic(errors.New("unknown direction"))
 	}
 
 	return next
@@ -172,6 +221,11 @@ func nextTileUp(current tile) tile {
 
 func nextTileDown(current tile) tile {
 	return tile{y: current.y + 1, x: current.x}
+}
+
+type flowStart struct {
+	current   tile
+	direction int
 }
 
 type tile struct {
