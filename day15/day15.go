@@ -69,24 +69,20 @@ func hash(value string) int {
 	return hash
 }
 
-type hashMap struct {
-	internalMap map[int][]lens
-}
+type hashMap map[int][]lens
 
-func newHashMap() *hashMap {
-	instance := &hashMap{
-		internalMap: make(map[int][]lens, 256),
-	}
+func newHashMap() hashMap {
+	instance := make(hashMap, 256)
 
 	for i := 0; i < 256; i++ {
-		instance.internalMap[i] = make([]lens, 0)
+		instance[i] = make([]lens, 0)
 	}
 
 	return instance
 }
 
-func (hm *hashMap) get(hash int) []lens {
-	lenses, found := hm.internalMap[hash]
+func (hm hashMap) get(hash int) []lens {
+	lenses, found := hm[hash]
 
 	if !found {
 		panic(errors.New("couldn't find lenses for hash"))
@@ -95,8 +91,8 @@ func (hm *hashMap) get(hash int) []lens {
 	return lenses
 }
 
-func (hm *hashMap) addOrUpdate(new lens) {
-	lenses, _ := hm.internalMap[new.hashCode()]
+func (hm hashMap) addOrUpdate(new lens) {
+	lenses, _ := hm[new.hashCode()]
 
 	index := slices.IndexFunc(lenses, func(l lens) bool {
 		return l.label == new.label
@@ -107,11 +103,11 @@ func (hm *hashMap) addOrUpdate(new lens) {
 		return
 	}
 
-	hm.internalMap[new.hashCode()] = append(lenses, new)
+	hm[new.hashCode()] = append(lenses, new)
 }
 
-func (hm *hashMap) remove(old lens) {
-	lenses, _ := hm.internalMap[old.hashCode()]
+func (hm hashMap) remove(old lens) {
+	lenses, _ := hm[old.hashCode()]
 
 	index := slices.IndexFunc(lenses, func(l lens) bool {
 		return l.label == old.label
@@ -121,7 +117,7 @@ func (hm *hashMap) remove(old lens) {
 		return
 	}
 
-	hm.internalMap[old.hashCode()] = util.RemoveIndex(index, lenses)
+	hm[old.hashCode()] = util.RemoveIndex(index, lenses)
 }
 
 type lens struct {
