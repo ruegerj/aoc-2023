@@ -19,6 +19,7 @@ Solutions for this years [Advent of Code](https://adventofcode.com/2023), implem
 - [Day 15: Lens Library](https://adventofcode.com/2023/day/15) ([code](https://github.com/ruegerj/aoc-2023/blob/main/day15/day15.go))
 - [Day 16: The Floor Will Be Lava](https://adventofcode.com/2023/day/16) ([code](https://github.com/ruegerj/aoc-2023/blob/main/day16/day16.go))
 - [Day 18: Lavaduct Lagoon](https://adventofcode.com/2023/day/18) ([code](https://github.com/ruegerj/aoc-2023/blob/main/day18/day18.go))
+- [Day 19: Aplenty](https://adventofcode.com/2023/day/19) ([code](https://github.com/ruegerj/aoc-2023/blob/main/day19/day19.go))
 
 ## Usage
 

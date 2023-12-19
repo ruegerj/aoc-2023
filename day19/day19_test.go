@@ -33,10 +33,10 @@ func TestPart1(t *testing.T) {
 }
 
 func TestPart2(t *testing.T) {
-	expected := -1 // TODO: adapt
+	expected := int64(121964982771486)
 	solution := Day19{}.Part2(dailyInput)
 
-	if solution.Result.(int) != expected {
+	if solution.Result.(int64) != expected {
 		t.Errorf("Expected %d, produced %d", expected, solution.Result)
 	}
 }
