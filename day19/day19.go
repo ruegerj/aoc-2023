@@ -25,7 +25,7 @@ type Day19 struct{}
 func (d Day19) Part1(input string) *common.Solution {
 	pipelines, items := parseSystem(input)
 
-	acceptedItems := make([]*Item, 0)
+	acceptedItems := make([]Item, 0)
 
 	for _, item := range items {
 		current := pipelines[START_PIPELINE]
@@ -56,7 +56,7 @@ func (d Day19) Part1(input string) *common.Solution {
 	totalScore := 0
 
 	for _, item := range acceptedItems {
-		totalScore += item.x + item.m + item.a + item.s
+		totalScore += item["x"] + item["m"] + item["a"] + item["s"]
 	}
 
 	return common.NewSolution(1, totalScore)
@@ -120,13 +120,13 @@ func buildKdTree(current *Pipeline, pipelines map[string]*Pipeline) *KDNode {
 	return node
 }
 
-func parseSystem(input string) (map[string]*Pipeline, []*Item) {
+func parseSystem(input string) (map[string]*Pipeline, []Item) {
 	groups := strings.Split(input, "\n\n")
 	rawPipelines := util.Lines(groups[0])
 	rawItems := util.Lines(groups[1])
 
 	pipelines := make(map[string]*Pipeline)
-	items := make([]*Item, len(rawItems))
+	items := make([]Item, len(rawItems))
 
 	for _, rawPipeline := range rawPipelines {
 		pipelineParts := util.MatchNamedSubgroups(PIPELINE_MATCHER, rawPipeline)
@@ -156,11 +156,11 @@ func parseSystem(input string) (map[string]*Pipeline, []*Item) {
 	for i, rawItem := range rawItems {
 		properties := util.MatchNamedSubgroups(ITEM_MATCHER, rawItem)
 
-		items[i] = &Item{
-			x: util.MustParseInt(properties["x"]),
-			m: util.MustParseInt(properties["m"]),
-			a: util.MustParseInt(properties["a"]),
-			s: util.MustParseInt(properties["s"]),
+		items[i] = map[string]int{
+			"x": util.MustParseInt(properties["x"]),
+			"m": util.MustParseInt(properties["m"]),
+			"a": util.MustParseInt(properties["a"]),
+			"s": util.MustParseInt(properties["s"]),
 		}
 	}
 
@@ -267,6 +267,8 @@ type Range struct {
 	to   int
 }
 
+type Item map[string]int
+
 type Pipeline struct {
 	property       string
 	operator       string
@@ -284,29 +286,12 @@ type Instruction struct {
 	targetPipeline string
 }
 
-func (instr Instruction) accepts(item *Item) bool {
-	propertyValue := -1
-
-	if instr.property == "x" {
-		propertyValue = item.x
-	} else if instr.property == "m" {
-		propertyValue = item.m
-	} else if instr.property == "a" {
-		propertyValue = item.a
-	} else if instr.property == "s" {
-		propertyValue = item.s
-	}
+func (instr Instruction) accepts(item Item) bool {
+	propertyValue := item[instr.property]
 
 	if instr.operator == ">" {
 		return propertyValue > instr.value
 	}
 
 	return propertyValue < instr.value
-}
-
-type Item struct {
-	x int
-	m int
-	a int
-	s int
 }
