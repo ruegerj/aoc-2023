@@ -2,7 +2,6 @@ package day17
 
 import (
 	"container/heap"
-	"fmt"
 	"strings"
 
 	mapset "github.com/deckarep/golang-set/v2"
@@ -13,36 +12,21 @@ import (
 type Day17 struct{}
 
 func (d Day17) Part1(input string) *common.Solution {
-	matrix := parseGraph(input)
+	graph := parseGraph(input)
+	startVector := &Vector{x: 0, y: 0, dx: 0, dy: 0, length: 0, priority: 0}
 
-	startVector := &Vector{
-		x:        0,
-		y:        0,
-		dx:       0,
-		dy:       0,
-		length:   0,
-		priority: 0,
-	}
-
-	pq := make(PriorityQueue, 0)
+	pq := PriorityQueue{startVector}
 	heap.Init(&pq)
-	heap.Push(&pq, startVector)
 
 	seen := mapset.NewSet[Visit]()
 
-	minCost := 0
+	minCost := -1
 
 	for pq.Len() > 0 {
 		current := heap.Pop(&pq).(*Vector)
-		visit := Visit{
-			x:     current.x,
-			y:     current.y,
-			dx:    current.dx,
-			dy:    current.dy,
-			steps: current.length,
-		}
+		visit := current.visit()
 
-		if current.x == len(matrix[0])-1 && current.y == len(matrix)-1 {
+		if current.isEnd(graph) {
 			minCost = current.priority
 			break
 		}
@@ -53,19 +37,17 @@ func (d Day17) Part1(input string) *common.Solution {
 
 		seen.Add(visit)
 
-		nextSameDirection := &Vector{dy: current.dy, dx: current.dx, length: current.length + 1}
+		sameDirection := &Vector{
+			x:      current.x + current.dx,
+			y:      current.y + current.dy,
+			dy:     current.dy,
+			dx:     current.dx,
+			length: current.length + 1,
+		}
 
-		if current.length < 3 && (current.dy != 0 || current.dx != 0) {
-			nextY := current.y + nextSameDirection.dy
-			nextX := current.x + nextSameDirection.dx
-
-			if nextX >= 0 && nextX < len(matrix[0]) && nextY >= 0 && nextY < len(matrix) {
-				nextSameDirection.x = nextX
-				nextSameDirection.y = nextY
-				nextSameDirection.priority = current.priority + matrix[nextY][nextX]
-
-				heap.Push(&pq, nextSameDirection)
-			}
+		if current.length < 3 && !current.isStale() && sameDirection.isInBounds(graph) {
+			sameDirection.priority = current.priority + graph[sameDirection.y][sameDirection.x]
+			heap.Push(&pq, sameDirection)
 		}
 
 		directions := []*Vector{
@@ -83,13 +65,11 @@ func (d Day17) Part1(input string) *common.Solution {
 				continue
 			}
 
-			nextY := current.y + direction.dy
-			nextX := current.x + direction.dx
+			direction.y = current.y + direction.dy
+			direction.x = current.x + direction.dx
 
-			if nextX >= 0 && nextX < len(matrix[0]) && nextY >= 0 && nextY < len(matrix) {
-				direction.x = nextX
-				direction.y = nextY
-				direction.priority = current.priority + matrix[nextY][nextX]
+			if direction.isInBounds(graph) {
+				direction.priority = current.priority + graph[direction.y][direction.x]
 
 				heap.Push(&pq, direction)
 			}
@@ -100,11 +80,75 @@ func (d Day17) Part1(input string) *common.Solution {
 }
 
 func (d Day17) Part2(input string) *common.Solution {
-	return common.NewSolution(2, -1)
-}
+	graph := parseGraph(input)
+	startVector := &Vector{x: 0, y: 0, dx: 0, dy: 0, length: 0, priority: 0}
 
-func colored(value string) string {
-	return fmt.Sprintf("\x1b[%dm%s\x1b[0m", 34, value)
+	pq := PriorityQueue{startVector}
+	heap.Init(&pq)
+
+	seen := mapset.NewSet[Visit]()
+
+	minCost := -1
+
+	for pq.Len() > 0 {
+		current := heap.Pop(&pq).(*Vector)
+		visit := current.visit()
+
+		if current.isEnd(graph) && current.length >= 4 {
+			minCost = current.priority
+			break
+		}
+
+		if seen.Contains(visit) {
+			continue
+		}
+
+		seen.Add(visit)
+
+		sameDirection := &Vector{
+			x:      current.x + current.dx,
+			y:      current.y + current.dy,
+			dy:     current.dy,
+			dx:     current.dx,
+			length: current.length + 1,
+		}
+
+		if current.length < 10 && !current.isStale() && sameDirection.isInBounds(graph) {
+			sameDirection.priority = current.priority + graph[sameDirection.y][sameDirection.x]
+			heap.Push(&pq, sameDirection)
+		}
+
+		if current.length < 4 && !current.isStale() {
+			continue
+		}
+
+		directions := []*Vector{
+			{dy: 0, dx: 1, length: 1},
+			{dy: 1, dx: 0, length: 1},
+			{dy: 0, dx: -1, length: 1},
+			{dy: -1, dx: 0, length: 1},
+		}
+
+		for _, direction := range directions {
+			isSame := direction.dx == current.dx && direction.dy == current.dy
+			isInverse := direction.dx == -current.dx && direction.dy == -current.dy
+
+			if isSame || isInverse {
+				continue
+			}
+
+			direction.y = current.y + direction.dy
+			direction.x = current.x + direction.dx
+
+			if direction.isInBounds(graph) {
+				direction.priority = current.priority + graph[direction.y][direction.x]
+
+				heap.Push(&pq, direction)
+			}
+		}
+	}
+
+	return common.NewSolution(2, minCost)
 }
 
 func parseGraph(input string) [][]int {
@@ -140,6 +184,28 @@ type Vector struct {
 
 	priority int
 	index    int
+}
+
+func (v *Vector) isStale() bool {
+	return v.dx == 0 && v.dy == 0
+}
+
+func (v *Vector) isInBounds(graph [][]int) bool {
+	return v.x >= 0 && v.x < len(graph[0]) && v.y >= 0 && v.y < len(graph)
+}
+
+func (v *Vector) isEnd(graph [][]int) bool {
+	return v.x == len(graph[0])-1 && v.y == len(graph)-1
+}
+
+func (v *Vector) visit() Visit {
+	return Visit{
+		x:     v.x,
+		y:     v.y,
+		dx:    v.dx,
+		dy:    v.dy,
+		steps: v.length,
+	}
 }
 
 // Array based priority queue which implements the container/heap interface
